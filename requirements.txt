@@ -1,0 +1,9 @@
+# fitbot_project/requirements.txt
+
+streamlit
+python-dotenv
+langchain
+langgraph
+langchain-google-genai
+langchain-community
+sqlalchemy
