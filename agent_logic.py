@@ -93,7 +93,7 @@ def create_fitbot_agent():
         temperature=0
     )
     
-    # Prompt sistem untuk mengarahkan perilaku agen
+    # System prompt untuk mengarahkan perilaku agen
     system_prompt = """
     Anda adalah FitBot, seorang asisten kebugaran AI yang ramah dan membantu.
     Tugas Anda adalah membantu pengguna mencapai tujuan kebugaran mereka.
@@ -112,7 +112,18 @@ def create_fitbot_agent():
     Selalu berkomunikasi dengan cara yang jelas dan memotivasi.
     """
     
-    # Membuat agen dengan LangGraph
-    agent_executor = create_react_agent(model=llm, tools=all_tools, messages_modifier=system_prompt)
+    # Create the prompt template that includes the system prompt
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", system_prompt),
+        ("user", "{messages}"),
+        ("assistant", "Remaining steps: {remaining_steps}")
+    ])
+    
+    # Create the agent with the prompt template
+    agent_executor = create_react_agent(
+        model=llm,
+        tools=all_tools,
+        prompt=prompt
+    )
     
     return agent_executor
