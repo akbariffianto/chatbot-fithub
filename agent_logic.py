@@ -112,11 +112,11 @@ def create_fitbot_agent():
     Selalu berkomunikasi dengan cara yang jelas dan memotivasi.
     """
     
-    # Create the agent with the system prompt as state_modifier
+    # Create the agent with the system prompt
     agent_executor = create_react_agent(
         model=llm,
         tools=all_tools,
-        state_modifier=system_prompt
+        prompt=system_prompt
     )
     
     return agent_executor
