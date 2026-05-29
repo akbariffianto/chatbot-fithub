@@ -24,7 +24,7 @@ def generate_workout_plan(goal: str, fitness_level: str, equipment: str) -> str:
         equipment (str): Peralatan yang tersedia (e.g., 'bodyweight only', 'dumbbells', 'full gym').
     """
     # Untuk versi ini, kita akan menggunakan LLM untuk membuat rencana secara dinamis
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7)
+    llm = ChatGoogleGenerativeAI(model="gemini-flash-latest", temperature=0.7)
     
     prompt = ChatPromptTemplate.from_template(
         """
@@ -68,7 +68,7 @@ def log_workout(exercise_name: str, sets: int, reps: int, weight_kg: float = 0) 
 
 # Inisialisasi koneksi database untuk LangChain
 db = SQLDatabase.from_uri(f"sqlite:///{DB_NAME}")
-llm_sql = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+llm_sql = ChatGoogleGenerativeAI(model="gemini-flash-latest", temperature=0)
 
 # SQLDatabaseToolkit menyediakan serangkaian tools untuk berinteraksi dengan DB
 # seperti "query_sql_db", "info_sql_db", dll.
@@ -88,7 +88,7 @@ def create_fitbot_agent():
     
     # Inisialisasi LLM utama untuk agen
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", 
+        model="gemini-flash-latest", 
         google_api_key=os.getenv("GOOGLE_API_KEY"),
         temperature=0
     )
@@ -112,18 +112,11 @@ def create_fitbot_agent():
     Selalu berkomunikasi dengan cara yang jelas dan memotivasi.
     """
     
-    # Create the prompt template that includes the system prompt
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("user", "{messages}"),
-        ("assistant", "Remaining steps: {remaining_steps}")
-    ])
-    
-    # Create the agent with the prompt template
+    # Create the agent with the system prompt as state_modifier
     agent_executor = create_react_agent(
         model=llm,
         tools=all_tools,
-        prompt=prompt
+        state_modifier=system_prompt
     )
     
     return agent_executor
