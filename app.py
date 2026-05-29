@@ -60,6 +60,16 @@ if prompt := st.chat_input("Tanyakan sesuatu pada FitBot..."):
     # Ambil konten pesan terakhir dari output agen
     ai_response_content = response['messages'][-1].content
     
+    # Gemini terkadang mengembalikan list of dict yang berisi metadata
+    # Kita hanya perlu mengekstrak isi dari key "text"
+    if isinstance(ai_response_content, list) and len(ai_response_content) > 0:
+        if isinstance(ai_response_content[0], dict) and "text" in ai_response_content[0]:
+            ai_response_content = ai_response_content[0]["text"]
+        else:
+            ai_response_content = str(ai_response_content)
+    elif not isinstance(ai_response_content, str):
+        ai_response_content = str(ai_response_content)
+    
     # Tambahkan respons AI ke riwayat dan tampilkan
     st.session_state.messages.append(AIMessage(content=ai_response_content))
     st.chat_message("assistant").write(ai_response_content)
